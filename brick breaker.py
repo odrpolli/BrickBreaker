@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 25 18:23:15 2022
-
-@author: owenp
-"""
+#Owen Pollitt, Sean Bell, Gavin Villanueva, Zachary Wong
 
 import pygame, sys, random, time
 from pygame.sprite import Sprite
