@@ -169,7 +169,77 @@ class Brickbreaker:
         #prints new screen
         pygame.display.flip()
         
+    def _create_ball(self):
+        """this function creates the object ball"""
+        #the variable ball is an element of the class Ball
+        ball=Ball(self)
+        self.balls.add(ball)
         
+    
+    def _create_grid(self):
+        """this function creates grid of the bricks"""
+        
+        #used try and error method to find the rows and columns of bricks that work best
+        available_space_x=self.settings.screen_width - int(self.settings.screen_width/6)
+        number_bricks_x=available_space_x//(self.settings.brick_width)
+
+        available_space_y=self.settings.screen_height-int(self.settings.screen_height/2)
+        number_bricks_y=available_space_y//(2*self.settings.brick_height)
+
+        #calls on _create_brick in order for a brick to be placed in assigned position
+        for row_number in range(number_bricks_y):
+            for brick_number in range(number_bricks_x):
+                self._create_brick(brick_number, row_number)
+    
+    def _create_brick(self, brick_number, row_number):
+        """this function creates the bricks"""
+        #the variable brick is an element of the class Brick
+        brick=Brick(self)
+        #the width and height of the brick gives the size of the rectangular brick
+        brick_width, brick_height=brick.rect.size
+        #used try n error to find the x coordinates of the bricks
+        brick.rect.x=brick_width+1.1*brick_width*brick_number
+        #used try n error to find the y coordinates of the bricks
+        brick.rect.y=brick_height+2*brick.rect.height*row_number
+        self.bricks.add(brick)
+    
+    def update_text(self):
+        """"this function updates the texts including the level and points"""
+        self.leveltext = self.settings.font.render(f'Level {self.settings.level}', True, self.settings.text_colour)
+        self.levelRect = self.leveltext.get_rect()
+        #enters the coorinate of the level text
+        self.levelRect.topleft=(0,0)
+        
+        self.points=self.settings.font.render(f' Points: {self.settings.score}',True,self.settings.text_colour)
+        self.pointsRect=self.points.get_rect()
+        #enters the coorinate of the points text
+        self.pointsRect.topright=(self.settings.screen_width,0)
+        
+        #display both texts on the screen
+        self.screen.blit(self.leveltext, self.levelRect)
+        self.screen.blit(self.points, self.pointsRect)
+    
+    def loss(self):
+        """this function displays a message if the player loses"""
+        #changes the end time and score on settings
+        self.settings.end_time=time.time()
+        self.settings.score+=int(self.settings.end_time-self.settings.start_time)
+        #uploads the image gameover as the message
+        message=pygame.image.load('gameover.bmp')
+        message=pygame.transform.scale(message, (self.settings.screen_width,self.settings.screen_height))
+        #enters the coorinate of the message
+        self.screen.blit(message, (0,0))
+        font=pygame.font.Font(self.settings.style,self.settings.size)
+        points=font.render(f' Points: {self.settings.score}',True,self.settings.text_colour)
+        pointsRect=points.get_rect()
+        pointsRect.center=(self.settings.screen_width/2,self.settings.screen_height/2)
+        #displays the player's final points
+        self.screen.blit(points, pointsRect)
+        pygame.display.flip()
+        #3 seconds before user can exit the game
+        time.sleep(3)
+        pygame.quit()
+        sys.exit()        
         
         
         
