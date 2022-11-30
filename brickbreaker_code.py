@@ -262,3 +262,68 @@ class Brick(Sprite):
         #the location of x and y 
         self.rect.x=self.rect.width
         self.rect.y=self.rect.height
+        
+#Creating the class and the import of Ball sprite.
+class Ball(Sprite):
+    """Properties of the ball."""
+    def __init__(self,game):
+        """Initializes the ball settings."""
+        
+        #Initializes all the inherited properties of "class Ball" from sprite.
+        super().__init__()
+        
+        #Initializes ball and starting position.
+        self.screen=game.screen
+        self.screen_rect=game.screen.get_rect()
+        self.settings=game.settings
+
+        #Loads the image of the ball.
+        self.image=pygame.image.load('ball.bmp')
+        
+        #Refers from the values of the height and width from the settings class
+        self.image=pygame.transform.scale(self.image, (game.settings.ball_width,game.settings.ball_height))
+        self.rect=self.image.get_rect()
+
+        #location of image (midbottom + paddle height so it starts above paddle)
+        random_location=random.randint(-game.settings.ball_start_rand,game.settings.ball_start_rand)
+        self.rect.midbottom=(self.screen_rect.midbottom[0]+random_location,self.screen_rect.midbottom[1]-game.settings.ball_height)
+        
+        #variables to store float location of ball (allows the ball to travel slower with decimal speeds)
+        self.posx=self.rect.x
+        self.posy=self.rect.y
+
+
+    def update(self):
+        """Determines the movement of the ball."""
+        
+        #If the ball does indeed move the following will occur.
+        #Keeps the ball inbound of the screen.
+        if self.settings.ballmove==True:
+            
+            #If "moving_x" is true from the settings class, then the ball moves
+            #to the right. Then ensures the ball stays in the vicinity of the 
+            #screen.
+            if self.settings.moving_x and self.rect.right<self.screen_rect.right:
+                self.posx+=self.settings.ball_speed
+                self.rect.x=self.posx
+            
+            #If "moving_x" is true from the settings class, then the ball moves
+            #to the left. Ensures the ball stays within the vicinity of the 
+            #screen.
+            if not self.settings.moving_x and self.rect.left>self.screen_rect.left:
+                self.posx-=self.settings.ball_speed
+                self.rect.x=self.posx
+                
+            #If "moving_y" is true from the settings class, then the ball moves
+            #to the downward. Ensures the ball stays within the vicinity of the 
+            #screen.
+            if self.settings.moving_y and self.rect.bottom<self.screen_rect.bottom:
+                self.posy+=self.settings.ball_speed
+                self.rect.y=self.posy
+                
+            #If "moving_y" is true from the settings class, then the ball moves
+            #to the upward. Ensures the ball stays within the vicinity of the 
+            #screen.
+            if not self.settings.moving_y and self.rect.top>self.screen_rect.top:
+                self.posy-=self.settings.ball_speed
+                self.rect.y=self.posy
