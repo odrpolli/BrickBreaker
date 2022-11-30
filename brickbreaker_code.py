@@ -332,7 +332,52 @@ class Brick(Sprite):
         #the location of x and y 
         self.rect.x=self.rect.width
         self.rect.y=self.rect.height
+
+
+class Paddle:
+    """This class manages the paddle for the brickbreaker game"""
+    def __init__(self, game):
+        """initializes paddle and paddle starting position"""
+        self.settings=game.settings
+        self.screen=game.screen
+        self.screen_rect=game.screen.get_rect()
+
+        #Loading image
+        self.image=pygame.image.load('paddle.bmp')
+        #size of image
+        self.image=pygame.transform.scale(self.image, (game.settings.paddle_width,game.settings.paddle_height))
+        self.rect=self.image.get_rect()
+
+        #location of image
+        self.rect.midbottom=self.screen_rect.midbottom
+        self.rect.midbottom=self.settings.paddlerect 
+
+        #movement flag
+        self.moving_right=False
+        self.moving_left=False
+        #variable posx is used to allow float speed values
+        self.posx=self.rect.x
+
         
+    def update(self):
+        """update paddle position based on movement flag"""
+        #stops paddle from leaving screen, change values to increase or decrease speed
+        #moving right
+        if self.moving_right and self.rect.right<self.screen_rect.right:
+            self.posx+=self.settings.paddle_speed
+            self.rect.x=self.posx
+        #moving left
+        if self.moving_left and self.rect.left>self.screen_rect.left:
+            self.posx-=self.settings.paddle_speed
+            self.rect.x=self.posx
+
+    def blitme(self):
+        """Draws paddle on screen"""
+        self.screen.blit(self.image, self.rect)
+
+
+
+    
 #Creating the class and the import of Ball sprite.
 class Ball(Sprite):
     """Properties of the ball."""
@@ -397,3 +442,12 @@ class Ball(Sprite):
             if not self.settings.moving_y and self.rect.top>self.screen_rect.top:
                 self.posy-=self.settings.ball_speed
                 self.rect.y=self.posy
+
+
+
+if __name__=='__main__':  
+    #Calling an instance of the game
+    game_instance=Brickbreaker()
+    game_instance.run_game()
+    
+    
