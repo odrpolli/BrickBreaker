@@ -168,3 +168,97 @@ class Brickbreaker:
         self.update_text()
         #prints new screen
         pygame.display.flip()
+        
+        
+        
+        
+        
+        
+        
+#creating the function for the settings of the game       
+class Settings:
+    """A class to store settings for the game"""
+    #defining the function 
+    def __init__(self):
+        """initializes the games settings"""
+        #screen width and height settings
+        self.screen_width=1200
+        self.screen_height=600
+        #screens background colour during the game (grey)
+        self.background_colour=(211,211,211)
+        #The inital score begining the game
+        self.score=0
+        #creating a timer for the duration of time spent in the game
+        self.start_time=time.time()
+        self.end_time=0
+        #The inital level begining the game 
+        self.level=1
+        
+        #font style and size
+        self.style='freesansbold.ttf'
+        self.size=32
+        self.text_colour=(0,0,0)
+        self.font=pygame.font.Font(self.style,self.size)
+        
+        
+        #Ball settings, speed,size, colour(yellow)
+        self.ball_speed=0.6
+        self.ball_width=25
+        self.ball_height=25
+        self.ball_colour=(255,173,0)
+        self.ball_start_rand=300
+        #increases the ball speed by 0.1 per round complete
+        self.increment_ball_speed=0.25
+        
+        #ball motion
+        random_motion=[True,False]
+        randomnum=random.randint(0,1)
+        #ensuring that the ball does indeed move 
+        self.ballmove=True
+        #ball changes motion in the x direction
+        self.moving_x=random_motion[randomnum]
+        #ball does not change motion in the y direction
+        self.moving_y=False
+        
+        #paddle settings
+        #resets width of the paddle after each round
+        self.reset_width=100
+        #creating the inital padddle width, height, speed, and the location
+        self.paddle_width=100
+        self.paddle_height=20
+        self.paddle_speed=1.5
+        self.paddlerect=(600,600)
+        
+        #Brick settings
+        #creating the bricks width, height, and precision needed to accept the brick has indeed been hit by the ball
+        self.brick_width=150
+        self.brick_height=30
+        self.collision_precision=3
+        #increases points per brick hit
+        self.point_increment=10
+        #probabilty of getting a powerup (1/20)
+        self.powerchance=20
+        
+        
+        
+        
+        
+        
+#creating the class and the import of sprite 
+class Brick(Sprite):
+    """represents bricks"""
+    #initializes the attributes of the class brick
+    def __init__(self,game):
+        """initializes bricks' settings"""
+        #inheriting the attributes of the import sprite
+        super().__init__()
+        self.settings=game.settings
+
+        #star image, size, location
+        self.image=pygame.image.load('brick.bmp')
+        self.image=pygame.transform.scale(self.image, (game.settings.brick_width,game.settings.brick_height))
+        self.rect=self.image.get_rect()
+       
+        #the location of x and y 
+        self.rect.x=self.rect.width
+        self.rect.y=self.rect.height
