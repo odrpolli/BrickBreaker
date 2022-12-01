@@ -1,7 +1,7 @@
 #Owen Pollitt, Sean Bell, Zackary Wong, Gavin Villanueva
 #CHE 120-Project      Brickbreaker from Scratch
 
-#importing modeules, pygame, sys, random, time and Sprite(from pygame)
+#importing modules, pygame, sys, random, time and Sprite(from pygame)
 import pygame, sys, random, time
 from pygame.sprite import Sprite
 
@@ -49,19 +49,19 @@ class Brickbreaker:
             #pressing keys
             elif event.type==pygame.KEYDOWN:
                 #Move Right
-                if event.key==pygame.K_RIGHT:
+                if event.key==pygame.K_RIGHT or event.key==pygame.K_d:
                     self.paddle.moving_right=True
                 #Move Left
-                elif event.key==pygame.K_LEFT:
+                elif event.key==pygame.K_LEFT or event.key==pygame.K_a:
                     self.paddle.moving_left=True
             
             #releasing keys
             elif event.type==pygame.KEYUP:
                 #Stop Move Right
-                if event.key==pygame.K_RIGHT:
+                if event.key==pygame.K_RIGHT or event.key==pygame.K_d:
                     self.paddle.moving_right=False
                 #Stop Move Left
-                elif event.key==pygame.K_LEFT:
+                elif event.key==pygame.K_LEFT or event.key==pygame.K_a:
                     self.paddle.moving_left=False
     
     def collisions(self):
@@ -120,9 +120,9 @@ class Brickbreaker:
         """1% chance of a powerup that increases the size of the paddle"""
         if random.randint(0,self.settings.powerchance)==1:
             #gets coordinates of paddle
-            coord=((self.paddle.rect.right+self.paddle.rect.left)/2,600)
+            coord=((self.paddle.rect.right+self.paddle.rect.left)/2,self.settings.screen_height)
             #increases paddle width
-            self.settings.paddle_width+=50
+            self.settings.paddle_width+=self.settings.paddlesize_increase
             #maintains the paddles coords when a new paddle with a new size is created
             self.settings.paddlerect=coord
             self.paddle=Paddle(self)
@@ -130,7 +130,7 @@ class Brickbreaker:
     def reset_paddle(self):
         """resets paddle width at every level"""
         #gets coordinates of paddle
-        coord=((self.paddle.rect.right+self.paddle.rect.left)/2,600)
+        coord=((self.paddle.rect.right+self.paddle.rect.left)/2,self.settings.screen_height)
         #resets paddle width
         self.settings.paddle_width=self.settings.reset_width
         #maintains paddle coordinates when a new paddle is creates
@@ -173,22 +173,16 @@ class Brickbreaker:
         """this function creates the object ball"""
         #the variable ball is an element of the class Ball
         ball=Ball(self)
+        #adds ball to sprite group balls
         self.balls.add(ball)
         
     
     def _create_grid(self):
         """this function creates grid of the bricks"""
-        
-        #used try and error method to find the rows and columns of bricks that work best
-        available_space_x=self.settings.screen_width - int(self.settings.screen_width/6)
-        number_bricks_x=available_space_x//(self.settings.brick_width)
-
-        available_space_y=self.settings.screen_height-int(self.settings.screen_height/2)
-        number_bricks_y=available_space_y//(2*self.settings.brick_height)
 
         #calls on _create_brick in order for a brick to be placed in assigned position
-        for row_number in range(number_bricks_y):
-            for brick_number in range(number_bricks_x):
+        for row_number in range(self.settings.number_bricks_y):
+            for brick_number in range(self.settings.number_bricks_x):
                 self._create_brick(brick_number, row_number)
     
     def _create_brick(self, brick_number, row_number):
@@ -197,19 +191,20 @@ class Brickbreaker:
         brick=Brick(self)
         #the width and height of the brick gives the size of the rectangular brick
         brick_width, brick_height=brick.rect.size
-        #used try n error to find the x coordinates of the bricks
-        brick.rect.x=brick_width+1.1*brick_width*brick_number
-        #used try n error to find the y coordinates of the bricks
-        brick.rect.y=brick_height+2*brick.rect.height*row_number
+        #used trial and error to find the x coordinates of the bricks
+        brick.rect.x=brick_width+brick_width*brick_number
+        #used trial and error to find the y coordinates of the bricks
+        brick.rect.y=brick_height+2*brick_height*row_number
         self.bricks.add(brick)
     
     def update_text(self):
-        """"this function updates the texts including the level and points"""
+        """this function updates the texts including the level and points"""
+        #sets up font, colour and text of the level
         self.leveltext = self.settings.font.render(f'Level {self.settings.level}', True, self.settings.text_colour)
         self.levelRect = self.leveltext.get_rect()
-        #enters the coorinate of the level text
+        #enters the coordinate of the level text
         self.levelRect.topleft=(0,0)
-        
+        #sets up font,colour and text for points
         self.points=self.settings.font.render(f' Points: {self.settings.score}',True,self.settings.text_colour)
         self.pointsRect=self.points.get_rect()
         #enters the coorinate of the points text
@@ -251,6 +246,8 @@ class Brickbreaker:
         message=pygame.transform.scale(message, (self.settings.screen_width,self.settings.screen_height))
         #enters the coorinate of the message
         self.screen.blit(message, (0,0))
+        
+        #adds points text
         font=pygame.font.Font(self.settings.style,self.settings.size)
         points=font.render(f' Time points: {time_points}   Total Points: {self.settings.score}   Highscore: {high_score}',True,self.settings.text_colour)
         pointsRect=points.get_rect()
@@ -266,10 +263,10 @@ class Brickbreaker:
         
               
         
-#creating the function for the settings of the game       
+       
 class Settings:
     """A class to store settings for the game"""
-    #defining the function 
+    # initializing settings
     def __init__(self):
         """initializes the games settings"""
         #screen width and height settings
@@ -277,12 +274,12 @@ class Settings:
         self.screen_height=600
         #screens background colour during the game (grey)
         self.background_colour=(211,211,211)
-        #The inital score begining the game
+        #The inital score at the start of the game
         self.score=0
         #creating a timer for the duration of time spent in the game
         self.start_time=time.time()
         self.end_time=0
-        #The inital level begining the game 
+        #The initial level beginning the game 
         self.level=1
         
         #font style and size
@@ -293,13 +290,12 @@ class Settings:
         
         
         #Ball settings, speed,size, colour(yellow)
-        self.ball_speed=0.6
+        self.ball_speed=0.4
         self.ball_width=25
         self.ball_height=25
-        self.ball_colour=(255,173,0)
         self.ball_start_rand=300
-        #increases the ball speed by 0.1 per round complete
-        self.increment_ball_speed=0.25
+        #increases the ball speed by 0.2 per round complete
+        self.increment_ball_speed=0.2
         
         #ball motion
         random_motion=[True,False]
@@ -316,14 +312,17 @@ class Settings:
         self.reset_width=100
         #creating the inital padddle width, height, speed, and the location
         self.paddle_width=100
-        self.paddle_height=20
+        self.paddle_height=10
         self.paddle_speed=1.5
-        self.paddlerect=(600,600)
+        self.paddlerect=(self.screen_width/2,self.screen_height)
+        self.paddlesize_increase=50
         
         #Brick settings
         #creating the bricks width, height, and precision needed to accept the brick has indeed been hit by the ball
         self.brick_width=150
         self.brick_height=30
+        self.number_bricks_x=6
+        self.number_bricks_y=5
         self.collision_precision=3
         #increases points per brick hit
         self.point_increment=10
@@ -335,30 +334,27 @@ class Settings:
         
         
         
-#creating the class and the import of sprite 
+
 class Brick(Sprite):
-    """represents bricks"""
-    #initializes the attributes of the class brick
+    """Class representing bricks"""
     def __init__(self,game):
-        """initializes bricks' settings"""
-        #inheriting the attributes of the import sprite
+        """initializes the attributes of the class brick"""
+        #inheriting the attributes of sprite from pygame
         super().__init__()
+        #gets the games settings
         self.settings=game.settings
 
         #star image, size, location
         self.image=pygame.image.load('brick.bmp')
         self.image=pygame.transform.scale(self.image, (game.settings.brick_width,game.settings.brick_height))
         self.rect=self.image.get_rect()
-       
-        #the location of x and y 
-        self.rect.x=self.rect.width
-        self.rect.y=self.rect.height
 
 
 class Paddle:
     """This class manages the paddle for the brickbreaker game"""
     def __init__(self, game):
         """initializes paddle and paddle starting position"""
+        #gets game settings
         self.settings=game.settings
         self.screen=game.screen
         self.screen_rect=game.screen.get_rect()
@@ -370,9 +366,8 @@ class Paddle:
         self.rect=self.image.get_rect()
 
         #location of image
-        self.rect.midbottom=self.screen_rect.midbottom
         self.rect.midbottom=self.settings.paddlerect 
-
+        
         #movement flag
         self.moving_right=False
         self.moving_left=False
@@ -382,7 +377,7 @@ class Paddle:
         
     def update(self):
         """update paddle position based on movement flag"""
-        #stops paddle from leaving screen, change values to increase or decrease speed
+        #stops paddle from leaving screen, change position values to move left and right
         #moving right
         if self.moving_right and self.rect.right<self.screen_rect.right:
             self.posx+=self.settings.paddle_speed
@@ -399,16 +394,16 @@ class Paddle:
 
 
     
-#Creating the class and the import of Ball sprite.
+
 class Ball(Sprite):
-    """Properties of the ball."""
+    """class defining the properties of the ball."""
     def __init__(self,game):
         """Initializes the ball settings."""
         
         #Initializes all the inherited properties of "class Ball" from sprite.
         super().__init__()
         
-        #Initializes ball and starting position.
+        #Initializes screen properties and settings.
         self.screen=game.screen
         self.screen_rect=game.screen.get_rect()
         self.settings=game.settings
@@ -417,7 +412,7 @@ class Ball(Sprite):
         self.image=pygame.image.load('ball.bmp')
         
         #Refers from the values of the height and width from the settings class
-        self.image=pygame.transform.scale(self.image, (game.settings.ball_width,game.settings.ball_height))
+        self.image=pygame.transform.scale(self.image, (self.settings.ball_width,self.settings.ball_height))
         self.rect=self.image.get_rect()
 
         #location of image (midbottom + paddle height so it starts above paddle)
@@ -443,7 +438,7 @@ class Ball(Sprite):
                 self.posx+=self.settings.ball_speed
                 self.rect.x=self.posx
             
-            #If "moving_x" is true from the settings class, then the ball moves
+            #If "moving_x" is false from the settings class, then the ball moves
             #to the left. Ensures the ball stays within the vicinity of the 
             #screen.
             if not self.settings.moving_x and self.rect.left>self.screen_rect.left:
@@ -457,7 +452,7 @@ class Ball(Sprite):
                 self.posy+=self.settings.ball_speed
                 self.rect.y=self.posy
                 
-            #If "moving_y" is true from the settings class, then the ball moves
+            #If "moving_y" is false from the settings class, then the ball moves
             #to the upward. Ensures the ball stays within the vicinity of the 
             #screen.
             if not self.settings.moving_y and self.rect.top>self.screen_rect.top:
