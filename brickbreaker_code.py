@@ -219,18 +219,40 @@ class Brickbreaker:
         self.screen.blit(self.leveltext, self.levelRect)
         self.screen.blit(self.points, self.pointsRect)
     
+    def upload_highscores(self,points):
+        """updates txt file with high scores and returns all time high score"""
+        #opens file
+        f=open('scores.txt','r+')
+        #reads file
+        scores=f.read()
+        #adds player score to scores
+        scores+=(f',{points}')
+        #splits string into list of scores
+        scores_list=scores.split(',')
+        #sorts list
+        scores_sorted=sorted([int(x) for x in scores_list])
+        #adds player score to txt file
+        f.write(f',{points}')
+        #closes file
+        f.close()
+        #returns all time high score
+        return scores_sorted[-1]
+    
     def loss(self):
         """this function displays a message if the player loses"""
         #changes the end time and score on settings
         self.settings.end_time=time.time()
-        self.settings.score+=int(self.settings.end_time-self.settings.start_time)
+        time_points=int(self.settings.end_time-self.settings.start_time)
+        self.settings.score+=time_points
+        #calls upload_highscores to determine all time high score
+        high_score=self.upload_highscores(self.settings.score)
         #uploads the image gameover as the message
         message=pygame.image.load('gameover.bmp')
         message=pygame.transform.scale(message, (self.settings.screen_width,self.settings.screen_height))
         #enters the coorinate of the message
         self.screen.blit(message, (0,0))
         font=pygame.font.Font(self.settings.style,self.settings.size)
-        points=font.render(f' Points: {self.settings.score}',True,self.settings.text_colour)
+        points=font.render(f' Time points: {time_points}   Total Points: {self.settings.score}   Highscore: {high_score}',True,self.settings.text_colour)
         pointsRect=points.get_rect()
         pointsRect.center=(self.settings.screen_width/2,self.settings.screen_height/2)
         #displays the player's final points
@@ -242,8 +264,7 @@ class Brickbreaker:
         sys.exit()        
         
         
-        
-        
+              
         
 #creating the function for the settings of the game       
 class Settings:
