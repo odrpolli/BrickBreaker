@@ -117,7 +117,7 @@ class Brickbreaker:
         
         
     def powerup(self):
-        """1% chance of a powerup that increases the size of the paddle"""
+        """5% chance of a powerup that increases the size of the paddle"""
         if random.randint(0,self.settings.powerchance)==1:
             #gets coordinates of paddle
             coord=((self.paddle.rect.right+self.paddle.rect.left)/2,self.settings.screen_height)
