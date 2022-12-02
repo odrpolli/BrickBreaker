@@ -344,7 +344,7 @@ class Brick(Sprite):
         #gets the games settings
         self.settings=game.settings
 
-        #star image, size, location
+        #brick image, size, location
         self.image=pygame.image.load('brick.bmp')
         self.image=pygame.transform.scale(self.image, (game.settings.brick_width,game.settings.brick_height))
         self.rect=self.image.get_rect()
