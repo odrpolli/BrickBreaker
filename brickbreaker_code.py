@@ -1,9 +1,13 @@
 #Owen Pollitt, Sean Bell, Zackary Wong, Gavin Villanueva
 #CHE 120-Project      Brickbreaker from Scratch
 
-#importing modules, pygame, sys, random, time and Sprite(from pygame)
+
+#Owen Pollitt
+###################################################################################################################################
+#importing modules, pygame, sys, random, time and Sprite and mixer(from pygame)
 import pygame, sys, random, time
 from pygame.sprite import Sprite
+from pygame import mixer
 
 class Brickbreaker:
     """Main Class that manages Brickbreaker game"""
@@ -25,6 +29,12 @@ class Brickbreaker:
         #creates sprite object for bricks and creates the grid of bricks
         self.bricks=pygame.sprite.Group()
         self._create_grid()
+        
+        #initializes music
+        mixer.init()
+        mixer.music.load("Mario.mp3")
+        mixer.music.set_volume(0.7)
+        mixer.music.play()
     
     def run_game(self):
         """Main game loop"""
@@ -169,6 +179,9 @@ class Brickbreaker:
         #prints new screen
         pygame.display.flip()
         
+        
+#Zachary Wong
+####################################################################################################################################
     def _create_ball(self):
         """this function creates the object ball"""
         #the variable ball is an element of the class Ball
@@ -261,8 +274,8 @@ class Brickbreaker:
         sys.exit()        
         
         
-              
-        
+#Sean Bell           
+#######################################################################################################################################        
        
 class Settings:
     """A class to store settings for the game"""
@@ -350,6 +363,10 @@ class Brick(Sprite):
         self.rect=self.image.get_rect()
 
 
+
+#Owen Pollitt
+####################################################################################################################################
+
 class Paddle:
     """This class manages the paddle for the brickbreaker game"""
     def __init__(self, game):
@@ -392,8 +409,8 @@ class Paddle:
         self.screen.blit(self.image, self.rect)
 
 
-
-    
+#Gavin Villanueva
+###################################################################################################################################   
 
 class Ball(Sprite):
     """class defining the properties of the ball."""
