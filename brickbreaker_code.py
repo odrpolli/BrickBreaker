@@ -128,7 +128,7 @@ class Brickbreaker:
         
     def powerup(self):
         """5% chance of a powerup that increases the size of the paddle"""
-        if random.randint(0,self.settings.powerchance)==1:
+        if random.randint(1,self.settings.powerchance)==1:
             #gets coordinates of paddle
             coord=((self.paddle.rect.right+self.paddle.rect.left)/2,self.settings.screen_height)
             #increases paddle width
@@ -336,7 +336,7 @@ class Settings:
         self.brick_height=30
         self.number_bricks_x=6
         self.number_bricks_y=5
-        self.collision_precision=3
+        self.collision_precision=5
         #increases points per brick hit
         self.point_increment=10
         #probabilty of getting a powerup (1/20)
